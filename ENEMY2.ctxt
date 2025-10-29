@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.target=ENEMY2
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ ENEMY2\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=
+comment1.target=ENEMY2()
+comment2.params=
+comment2.target=void\ act()
+comment3.params=
+comment3.target=void\ animate()
+comment4.params=
+comment4.target=void\ fall()
+comment5.params=
+comment5.target=void\ tembak()
+comment6.params=
+comment6.target=void\ kenaTembak()
+numComments=7
