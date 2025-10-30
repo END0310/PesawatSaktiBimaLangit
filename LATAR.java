@@ -38,9 +38,11 @@ public class LATAR extends World
         // Panggil fungsi untuk menggerakkan background
         scrollBackground();
         // Batasi jumlah musuh biar tidak lag
-        if (getObjects(ENEMY1.class).size() + getObjects(ENEMY2.class).size() > 10) {
-            return;
-        }
+         if (getObjects(ENEMY1.class).size() + getObjects(ENEMY2.class).size() > 10) return;
+        if (getObjects(PELURU_PLAYER.class).size() > 15) return;
+        if (getObjects(Ledakan.class).size() > 10) return;
+
+        
 
         // Spawn musuh random
         if (Greenfoot.getRandomNumber(100) < 2) {
@@ -79,7 +81,10 @@ public class LATAR extends World
         nyawa += point;
         tampilnyawa();
 
-        if (nyawa <= 0) { Greenfoot.stop(); showText("GAME OVER", 225, 300); }
+       if (nyawa <= 0) { // ✅ tambah pengecekan agar hanya terjadi sekali
+            gameOver = true; // ✅ tandai permainan selesai
+            tampilGameOver();
+        }
     }
 
     public void tampilnyawa() {
@@ -90,4 +95,24 @@ public class LATAR extends World
     return nyawa;
     }
     
+    
+    private void tampilGameOver() {
+        removeObjects(getObjects(PLAYER.class));
+        removeObjects(getObjects(ENEMY1.class));
+        removeObjects(getObjects(ENEMY2.class));
+        removeObjects(getObjects(PELURU_PLAYER.class));
+        removeObjects(getObjects(Peluru_Monster_2.class));
+        removeObjects(getObjects(Ledakan.class));
+        removeObjects(getObjects(HP_Bonus.class));
+        removeObjects(getObjects(Enemy_Destroy_Bonus.class));
+        removeObjects(getObjects(Barrier_Bonus.class));
+        showText("GAME OVER", getWidth()/2, getHeight()/2 - 30);
+        showText("Score Akhir: " + score, getWidth()/2, getHeight()/2);
+        //Greenfoot.playSound("gameover.wav"); // opsional jika kamu punya suara Game Over
+
+        // Tambahkan tombol replay
+        addObject(new Replay(),getWidth()/2 + 40, getHeight()/2 + 60);
+        addObject(new TOMBOL_KEMBALI(),getWidth()/2 - 40, getHeight()/2 + 60);
+    
+    }
 }

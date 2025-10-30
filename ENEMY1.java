@@ -7,7 +7,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @version (a version number or a date)
  */
 public class ENEMY1 extends Actor implements MUSUH,GERAK {
-    private int speedX = 1;  
+     private int speedX = 1;  
     private int speedY = 1;
 
     private GreenfootImage[] frames = new GreenfootImage[3];
@@ -15,22 +15,24 @@ public class ENEMY1 extends Actor implements MUSUH,GERAK {
     private int counter = 0;
 
     public ENEMY1() {
-        // Load 3 frame animasi
+        // Load 3 frame animasi (pakai try biar aman kalau file gak ketemu)
         for (int i = 0; i < 3; i++) {
-            frames[i] = new GreenfootImage("ENEMY1(" + (i+1) + ").png");
-            frames[i].scale(50, 80);
+            try {
+                frames[i] = new GreenfootImage("ENEMY1(" + (i+1) + ").png");
+                frames[i].scale(50, 80);
+            } catch (IllegalArgumentException e) {
+                frames[i] = new GreenfootImage(50, 80); // fallback biar gak error
+            }
         }
         setImage(frames[0]);
     }
 
     public void act() {
-         if (getWorld() == null) return; 
-        
         animate();   // ganti frame
         gerak();     // zigzag
         setLocation(getX(), getY() + 1); // turun
 
-        if (getY() >= 590) {
+        if (getY() >= 590 && getWorld() != null) {
             getWorld().removeObject(this);
         }
     }
@@ -54,28 +56,33 @@ public class ENEMY1 extends Actor implements MUSUH,GERAK {
     }
 
     public void kenaTembak() {
-        if (getWorld() == null) return;
+        // ? mainkan suara ledakan sekali (jangan spam)
+         if (Greenfoot.getRandomNumber(3) == 0) {
+            Greenfoot.playSound("explosion.wav");
+        }
         
-        LATAR world = (LATAR) getWorld();
-        Greenfoot.playSound("explosion.wav");
-        
-        getWorld().addObject(new Ledakan(), getX(), getY());
-        world.addScore(1);
-        
-         // drop bonus
-    if (Greenfoot.getRandomNumber(100) < 2) {
-        getWorld().addObject(new HP_Bonus(), getX(), getY());
-    }
-    
-    // drop bonus destroy
-    if (Greenfoot.getRandomNumber(100) < 3) {
-        getWorld().addObject(new Enemy_Destroy_Bonus(), getX(), getY());
-    }
-    
-    if (Greenfoot.getRandomNumber(100) < 5) {
-    getWorld().addObject(new Barrier_Bonus(), getX(), getY());
-    }
+        // ? tambahkan ledakan (dibatasi 5 agar tidak berat)
+        if (getWorld().getObjects(Ledakan.class).size() < 5) {
+            getWorld().addObject(new Ledakan(), getX(), getY());
+        }
 
-    world.removeObject(this);
+        LATAR world = (LATAR) getWorld();
+        world.addScore(1);
+
+        // ?drop bonus dengan probabilitas
+        if (Greenfoot.getRandomNumber(100) < 2) {
+            getWorld().addObject(new HP_Bonus(), getX(), getY());
+        }
+        if (Greenfoot.getRandomNumber(100) < 3) {
+            getWorld().addObject(new Enemy_Destroy_Bonus(), getX(), getY());
+        }
+        if (Greenfoot.getRandomNumber(100) < 5) {
+            getWorld().addObject(new Barrier_Bonus(), getX(), getY());
+        }
+
+        //  hapus musuh sekali saja, setelah semuanya ditambahkan
+        if (getWorld() != null) {
+            getWorld().removeObject(this);}
+        }
+
     }
-}
